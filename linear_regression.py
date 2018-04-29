@@ -112,7 +112,7 @@ class LinearRegression:
         return np.squeeze(np.append(np.ones((X.shape[0], 1)), X, 1).dot(self.theta))
 
 
-"""Example code:"""
+# Example code:
 
 print("Single feature linear regression: ")
 test = np.loadtxt('data/linear.txt', delimiter=',')
@@ -134,8 +134,8 @@ plt.title("Linear Regression Prediction")
 plt.show()
 
 
-print("\n\nMultivariate linear regression: ")
-test = np.loadtxt('data/linear_multivariate.txt', delimiter=',')
+print("\n\nMultiple feature linear regression: ")
+test = np.loadtxt('data/linear_multi.txt', delimiter=',')
 X = test[:, 0:2]
 y = test[:, 2]
 

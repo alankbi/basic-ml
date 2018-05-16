@@ -209,24 +209,31 @@ print("Neural network: ")
 test = np.loadtxt('data/logistic_multi.txt', delimiter=',')
 X = test[:, 0:2]
 y = test[:, 2]
+X = np.append(X, (X[:, 0] * X[:, 1] / 100)[np.newaxis].T, axis=1)
+X = np.append(X, (X[:, 0] ** 2 / 100)[np.newaxis].T, axis=1)
+X = np.append(X, (X[:, 1] ** 2 / 100)[np.newaxis].T, axis=1)
 
 fig, ax = plt.subplots()
-ax.scatter(X[y == 0,0], X[y == 0,1], marker='o')
-ax.scatter(X[y == 1,0], X[y == 1,1], marker='*')
-ax.scatter(X[y == 2,0], X[y == 2,1], marker='+')
-ax.scatter(X[y == 3,0], X[y == 3,1], marker='.')
+ax.scatter(X[y == 0, 0], X[y == 0, 1], marker='o')
+ax.scatter(X[y == 1, 0], X[y == 1, 1], marker='*')
+ax.scatter(X[y == 2, 0], X[y == 2, 1], marker='+')
+ax.scatter(X[y == 3, 0], X[y == 3, 1], marker='.')
 plt.show()
 
-nn = NeuralNetwork(2, 4, 1, 8)
-nn.fit(X, y, no_of_iterations=3000, learning_rate=0.05, visualize=True)
-print("Predictions for [30, 10], [20, 70], [80, 30], and [70, 70]:")
-print(nn.predict(np.array([[30, 10], [20, 70], [80, 30], [70, 70]])))
+nn = NeuralNetwork(5, 4, 1, 8)
+nn.fit(X, y, no_of_iterations=1000, learning_rate=0.05, visualize=True)
+print("Predictions for (50, 50), (40, 40), (40, 60), (60, 30), and (60, 60)")
+print(nn.predict(np.array([[50., 50, 25, 25, 25],
+                           [40., 40, 16, 16, 16],
+                           [40., 60, 24, 16, 36],
+                           [60., 30, 18, 36, 9],
+                           [60., 60, 36, 36,36]])))
 
 pred = nn.predict(X)
 fig, ax = plt.subplots()
-ax.scatter(X[pred == 0,0], X[pred == 0,1], marker='o')
-ax.scatter(X[pred == 1,0], X[pred == 1,1], marker='*')
-ax.scatter(X[pred == 2,0], X[pred == 2,1], marker='+')
-ax.scatter(X[pred == 3,0], X[pred == 3,1], marker='.')
-ax.set_title("Neural Network Predictions")
+ax.scatter(X[pred == 0, 0], X[pred == 0, 1], marker='o')
+ax.scatter(X[pred == 1, 0], X[pred == 1, 1], marker='*')
+ax.scatter(X[pred == 2, 0], X[pred == 2, 1], marker='+')
+ax.scatter(X[pred == 3, 0], X[pred == 3, 1], marker='.')
+ax.set_title("Neural Network Predictions on Training Set")
 plt.show()

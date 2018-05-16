@@ -68,19 +68,11 @@ class LogisticRegression:
             all_thetas.append(theta)
 
             if visualize:
-                if X.shape[1] < 3:
-                    fig, ax1 = plt.subplots()
-                else:
-                    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
-                ax1.plot(range(no_of_iterations + 1), score)
-                ax1.set_ylabel('Mean Squared Error')
-                ax1.set_xlabel('Number of Iterations')
-                ax1.set_title("Gradient descent when " + str(val) + " set to positive (1)")
-
-                if X.shape[1] >= 3:
-                    ax2.scatter(X[y == 1,1], X[y == 1,2], marker='o')
-                    ax2.scatter(X[y == 0,1], X[y == 0,2], marker='x')
-                    ax2.set_title(str(val) + " marked as 'o'")
+                fig, ax = plt.subplots()
+                ax.plot(range(no_of_iterations + 1), score)
+                ax.set_ylabel('Mean Squared Error')
+                ax.set_xlabel('Number of Iterations')
+                ax.set_title("Gradient descent when " + str(int(val)) + " label set to positive")
                 plt.show()
         return np.asarray(all_thetas)
 
@@ -163,10 +155,19 @@ X = np.append(X, (X[:, 0] ** 2 / 100)[np.newaxis].T, axis=1)
 X = np.append(X, (X[:, 1] ** 2 / 100)[np.newaxis].T, axis=1)
 
 lr = LogisticRegression()
-theta = lr.fit(X, y, visualize=True, learning_rate=0.0001, no_of_iterations=1000)
+theta = lr.fit(X, y, learning_rate=0.0001, no_of_iterations=1000)
 print("Predictions for (50, 50), (40, 40), (40, 60), (60, 30), and (60, 60)")
 print(lr.predict(np.array([[50., 50, 25, 25, 25],
                            [40., 40, 16, 16, 16],
                            [40., 60, 24, 16, 36],
                            [60., 30, 18, 36, 9],
                            [60., 60, 36, 36,36]])))
+
+pred = lr.predict(X)
+fig, ax = plt.subplots()
+ax.scatter(X[pred == 0, 0], X[pred == 0,1], marker='o')
+ax.scatter(X[pred == 1, 0], X[pred == 1,1], marker='*')
+ax.scatter(X[pred == 2, 0], X[pred == 2,1], marker='+')
+ax.scatter(X[pred == 3, 0], X[pred == 3,1], marker='.')
+ax.set_title("Logistic Regression Predictions on Multi Training Set")
+plt.show()

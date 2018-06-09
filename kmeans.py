@@ -1,7 +1,6 @@
 """
-This class is used to perform logistic regression classification
-on NumPy arrays. It can similarly be used to perform multi-class
-classification.
+This class is used to k-means clustering given a NumPy
+array containing numerical features.
 """
 
 import numpy as np
@@ -14,27 +13,26 @@ class KMeans:
 
     def cluster(self, data, no_of_clusters, no_of_iterations=None, no_of_trials=1, normalize=False):
         """
-        Fits this model on the given datasets.
+        Performs k-means clustering on the given data.
 
         Parameters:
         ___________
-        X:  1D or 2D NumPy array of floats. If 1D, assumes X is an array with a single feature.
-            If 2D, each column represents each feature and each row represents each test case.
-        y:  1D NumPy array of floats representing the labels for each test case.
-        learning_rate: Represents the step size on each iteration of gradient descent
-            for how much to edit the model parameters (float value).
-        no_of_iterations: Sets the number of iterations (int value) of gradient descent.
-        normalize: Boolean determining whether to normalize values before fitting by
+        data:  2D NumPy array where rows represent test cases and columns represent features.
+        no_of_clusters:  How many clusters to group the data into.
+        no_of_iterations: How many iterations of cluster assignment/centroid computation to
+            perform. If set to None, will keep iterating until the optimum is reached.
+        no_of_trials: The number of times to perform k-means clustering, each trial differing
+            by the initial centroids. The results from the best trial are returned.
+        normalize: Boolean determining whether to normalize features before fitting by
              subtracting the mean and dividing by standard deviation.
-        visualize: If set to true, shows graphs of mean squared error vs. number of iterations
-             as well as special graphs of the data if performing multi-class classification.
-        regularization: A float that represents the regularization parameter used to prevent
-            over-fitting. If set to 0, regularization is not performed.
 
         Returns:
         ________
-        A NumPy array of NumPy arrays representing column vectors of the model parameters for
-        each of the unique classifications for the data.
+        A tuple. The first element is a 1D NumPy array of integers where the value
+        at each index represents which cluster that test case has been assigned to.
+        The second element is a 2D NumPy array where each row represents a cluster
+        and each column represents a feature, with the values representing the
+        locations of the cluster centroids.
         """
 
         if data.ndim == 1:
@@ -114,9 +112,14 @@ plt.show()
 
 kmeans = KMeans()
 assignments, clusters = kmeans.cluster(data, 3, no_of_trials=10)
+print("Clusters:")
+print(clusters)
+print("Assignments:")
+print(assignments)
 
 plt.scatter(data[assignments == 0, 0], data[assignments == 0, 1], marker='o')
 plt.scatter(data[assignments == 1, 0], data[assignments == 1, 1], marker='x')
 plt.scatter(data[assignments == 2, 0], data[assignments == 2, 1], marker='1')
+plt.title("Cluster Assignments")
 
 plt.show()

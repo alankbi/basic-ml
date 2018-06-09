@@ -26,7 +26,7 @@ class LinearRegression:
             for how much to edit the model parameters (float value).
         no_of_iterations: If using gradient descent, sets the number of iterations (int value).
         normalize: If using gradient descent, this boolean determines whether to normalize
-            values before fitting (subtract the mean and divide by standard deviation).
+            features before fitting (subtract the mean and divide by standard deviation).
         visualize: If set to true and using gradient descent, shows a graph of mean squared
             error vs. number of iterations.
         regularization: A float that represents the regularization parameter used to prevent

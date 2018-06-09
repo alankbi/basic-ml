@@ -23,7 +23,7 @@ class LogisticRegression:
         learning_rate: Represents the step size on each iteration of gradient descent
             for how much to edit the model parameters (float value).
         no_of_iterations: Sets the number of iterations (int value) of gradient descent.
-        normalize: Boolean determining whether to normalize values before fitting by
+        normalize: Boolean determining whether to normalize features before fitting by
              subtracting the mean and dividing by standard deviation.
         visualize: If set to true, shows graphs of mean squared error vs. number of iterations
              as well as special graphs of the data if performing multi-class classification.

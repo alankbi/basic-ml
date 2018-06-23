@@ -145,7 +145,7 @@ plt.title("Logistic Regression Prediction")
 plt.show()
 
 print("\n\nMultivariate/multi classification logistic regression: ")
-test = np.loadtxt('data/logistic_multi.txt', delimiter=',')
+test = np.loadtxt('data/multi_classification.txt', delimiter=',')
 X = test[:, 0:2]
 y = test[:, 2]
 

@@ -206,7 +206,7 @@ class NeuralNetwork:
 # Example code:
 
 print("Neural network: ")
-test = np.loadtxt('data/logistic_multi.txt', delimiter=',')
+test = np.loadtxt('data/multi_classification.txt', delimiter=',')
 X = test[:, 0:2]
 y = test[:, 2]
 X = np.append(X, (X[:, 0] * X[:, 1] / 100)[np.newaxis].T, axis=1)

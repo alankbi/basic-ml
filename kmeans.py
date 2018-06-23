@@ -1,6 +1,6 @@
 """
-This class is used to k-means clustering given a NumPy
-array containing numerical features.
+This class is used to perform k-means clustering given a NumPy
+array containing numerical features. Uses Euclidean distance.
 """
 
 import numpy as np

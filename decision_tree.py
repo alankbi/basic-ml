@@ -45,8 +45,11 @@ class DecisionTree:
     def information_gain(self):
         return None
 
-    def partition(self, X, y, rule):
-        return None
+    def partition(self, X, rule):
+        true_branch = X[rule.match(X), :]
+        false_branch = X[~rule.match(X), :]
+
+        return true_branch, false_branch
 
     def predict(self, X):
         """
@@ -84,10 +87,12 @@ class Rule:
         self.value = value
         self.column = column
 
-    def match(self, row):
+    def match(self, X):
+        if X.ndim == 1:
+            X = X[np.newaxis]
         if isinstance(self.value, Number):
-            return row[self.column] >= self.value
-        return row[self.column] == self.value
+            return X[:, self.column] >= self.value
+        return X[:, self.column] == self.value
 
 
 # Example code:
@@ -96,3 +101,11 @@ class Rule:
 tree = DecisionTree()
 impurity = tree.gini_impurity(np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]))
 print(impurity)
+
+# Test match and partition
+rule = Rule(3, 1)
+foo = rule.match(np.array([[1, 2, 3],
+                           [4, 5, 6]]))
+print(foo)
+print(tree.partition(np.array([[1, 2, 3],
+                              [4, 5, 6]]), rule))

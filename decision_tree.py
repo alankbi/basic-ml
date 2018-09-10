@@ -42,14 +42,19 @@ class DecisionTree:
             impurity -= (1.0 * count / len(labels)) ** 2
         return impurity
 
-    def information_gain(self):
-        return None
+    def information_gain(self, original, true_branch, false_branch):
+        total_labels = len(true_branch) + len(false_branch)
+        weighted_gini_impurity = (len(true_branch) * self.gini_impurity(true_branch) +
+                                  len(false_branch) * self.gini_impurity(false_branch)) / total_labels
+        return self.gini_impurity(original) - weighted_gini_impurity
 
-    def partition(self, X, rule):
-        true_branch = X[rule.match(X), :]
-        false_branch = X[~rule.match(X), :]
+    def partition(self, X, y, rule):
+        true_branch_X = X[rule.match(X), :]
+        true_branch_y = y[rule.match(X)]
+        false_branch_X = X[~rule.match(X), :]
+        false_branch_y = y[~rule.match(X)]
 
-        return true_branch, false_branch
+        return true_branch_X, true_branch_y, false_branch_X, false_branch_y
 
     def predict(self, X):
         """
@@ -108,4 +113,9 @@ foo = rule.match(np.array([[1, 2, 3],
                            [4, 5, 6]]))
 print(foo)
 print(tree.partition(np.array([[1, 2, 3],
-                              [4, 5, 6]]), rule))
+                              [4, 5, 6]]), np.array([1, 2]), rule))
+
+# Test information gain
+print(tree.information_gain(np.array([1, 1, 1]), np.array([1]), np.array([1, 1])))
+print(tree.information_gain(np.array([2, 2, 3, 3]), np.array([2, 2]), np.array([3, 3])))
+

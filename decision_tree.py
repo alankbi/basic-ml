@@ -33,7 +33,20 @@ class DecisionTree:
         return None
 
     def find_split(self, X, y):
-        return None
+        best_gain = 0
+        best_rule = None
+
+        for i in range(X.shape[1]):
+            unique_values = np.unique(X[:, i])
+            for value in unique_values:
+                rule = Rule(value, i)
+                __, true_branch_y, __, false_branch_y = self.partition(X, y, rule)
+                gain = self.information_gain(y, true_branch_y, false_branch_y)
+                if gain > best_gain:
+                    best_gain = gain
+                    best_rule = rule
+
+        return best_rule
 
     def gini_impurity(self, labels):
         impurity = 1.0
@@ -109,13 +122,14 @@ print(impurity)
 
 # Test match and partition
 rule = Rule(3, 1)
-foo = rule.match(np.array([[1, 2, 3],
-                           [4, 5, 6]]))
+foo = rule.match(np.arange(6).reshape(2, 3))
 print(foo)
-print(tree.partition(np.array([[1, 2, 3],
-                              [4, 5, 6]]), np.array([1, 2]), rule))
+print(tree.partition(np.arange(6).reshape(2, 3), np.array([1, 2]), rule))
 
 # Test information gain
 print(tree.information_gain(np.array([1, 1, 1]), np.array([1]), np.array([1, 1])))
 print(tree.information_gain(np.array([2, 2, 3, 3]), np.array([2, 2]), np.array([3, 3])))
 
+# Test best split
+best_rule = tree.find_split(np.arange(12).reshape(4, 3), np.array([1, 1, 2, 2]))
+print(str(best_rule.value) + ' ' + str(best_rule.column))

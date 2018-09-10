@@ -27,10 +27,16 @@ class DecisionTree:
         if X.ndim == 1:
             X = X[np.newaxis].T
 
-        return self.build_tree(X, y)
+        self.root = self.build_tree(X, y)
+        return self.root
 
     def build_tree(self, X, y):
-        return None
+        rule, gain = self.find_split(X, y)
+        if gain == 0:
+            return LeafNode(y)
+        true_branch_X, true_branch_y, false_branch_X, false_branch_y = self.partition(X, y, rule)
+        return DecisionNode(rule, self.build_tree(true_branch_X, true_branch_y),
+                            self.build_tree(false_branch_X, false_branch_y))
 
     def find_split(self, X, y):
         best_gain = 0
@@ -46,7 +52,7 @@ class DecisionTree:
                     best_gain = gain
                     best_rule = rule
 
-        return best_rule
+        return best_rule, best_gain
 
     def gini_impurity(self, labels):
         impurity = 1.0
@@ -88,15 +94,32 @@ class DecisionTree:
         if X.ndim == 1:
             X = X[np.newaxis]
 
-        return None
+        predictions = np.zeros(X.shape[0])
+        for i in range(X.shape[0]):
+            node = self.root
+            while isinstance(node, DecisionNode):
+                if node.rule.match(X[i, :])[0]:  # Get single boolean value
+                    node = node.true_branch
+                else:
+                    node = node.false_branch
+            predictions[i] = node.label
+
+        return np.squeeze(predictions)
 
 
-class DecisionTreeNode:
+class DecisionNode:
 
-    def __init__(self, rule, true_branch=None, false_branch=None):
+    def __init__(self, rule, true_branch, false_branch):
         self.rule = rule
         self.true_branch = true_branch
         self.false_branch = false_branch
+
+
+class LeafNode:
+
+    def __init__(self, labels):
+        unique, counts = np.unique(labels, return_counts=True)
+        self.label = unique[np.argmax(counts)]
 
 
 class Rule:
@@ -131,5 +154,21 @@ print(tree.information_gain(np.array([1, 1, 1]), np.array([1]), np.array([1, 1])
 print(tree.information_gain(np.array([2, 2, 3, 3]), np.array([2, 2]), np.array([3, 3])))
 
 # Test best split
-best_rule = tree.find_split(np.arange(12).reshape(4, 3), np.array([1, 1, 2, 2]))
+best_rule, __ = tree.find_split(np.arange(12).reshape(4, 3), np.array([1, 1, 2, 2]))
 print(str(best_rule.value) + ' ' + str(best_rule.column))
+
+# Test fit and predict
+tree.fit(np.arange(12).reshape(4, 3), np.array([1, 1, 2, 2]))
+print(tree.predict(np.arange(12).reshape(4, 3)))
+
+test = np.loadtxt('data/multi_classification.txt', delimiter=',')
+X = test[:, 0:2]
+y = test[:, 2]
+
+tree.fit(X, y)
+predictions = tree.predict(np.array([[50., 50, 25, 25, 25],
+                           [40., 40, 16, 16, 16],
+                           [40., 60, 24, 16, 36],
+                           [60., 30, 18, 36, 9],
+                           [60., 60, 36, 36, 36]]))
+print(predictions)

@@ -4,6 +4,7 @@ NumPy arrays.
 """
 
 import numpy as np
+import matplotlib.pyplot as plt
 from numbers import Number
 
 
@@ -138,37 +139,33 @@ class Rule:
 
 # Example code:
 
-# Test gini_impurity method
-tree = DecisionTree()
-impurity = tree.gini_impurity(np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]))
-print(impurity)
-
-# Test match and partition
-rule = Rule(3, 1)
-foo = rule.match(np.arange(6).reshape(2, 3))
-print(foo)
-print(tree.partition(np.arange(6).reshape(2, 3), np.array([1, 2]), rule))
-
-# Test information gain
-print(tree.information_gain(np.array([1, 1, 1]), np.array([1]), np.array([1, 1])))
-print(tree.information_gain(np.array([2, 2, 3, 3]), np.array([2, 2]), np.array([3, 3])))
-
-# Test best split
-best_rule, __ = tree.find_split(np.arange(12).reshape(4, 3), np.array([1, 1, 2, 2]))
-print(str(best_rule.value) + ' ' + str(best_rule.column))
-
-# Test fit and predict
-tree.fit(np.arange(12).reshape(4, 3), np.array([1, 1, 2, 2]))
-print(tree.predict(np.arange(12).reshape(4, 3)))
-
+print("Decision Tree: ")
 test = np.loadtxt('data/multi_classification.txt', delimiter=',')
 X = test[:, 0:2]
 y = test[:, 2]
 
+fig, ax = plt.subplots()
+ax.scatter(X[y == 0, 0], X[y == 0, 1], marker='o')
+ax.scatter(X[y == 1, 0], X[y == 1, 1], marker='*')
+ax.scatter(X[y == 2, 0], X[y == 2, 1], marker='+')
+ax.scatter(X[y == 3, 0], X[y == 3, 1], marker='.')
+plt.show()
+
+tree = DecisionTree()
 tree.fit(X, y)
-predictions = tree.predict(np.array([[50., 50, 25, 25, 25],
-                           [40., 40, 16, 16, 16],
-                           [40., 60, 24, 16, 36],
-                           [60., 30, 18, 36, 9],
-                           [60., 60, 36, 36, 36]]))
+print("Predictions for (50, 50), (40, 40), (40, 60), (60, 30), and (60, 60)")
+predictions = tree.predict(np.array([[50., 50],
+                                     [40., 40],
+                                     [40., 60],
+                                     [60., 30],
+                                     [60., 60]]))
 print(predictions)
+
+pred = tree.predict(X)
+fig, ax = plt.subplots()
+ax.scatter(X[pred == 0, 0], X[pred == 0, 1], marker='o')
+ax.scatter(X[pred == 1, 0], X[pred == 1, 1], marker='*')
+ax.scatter(X[pred == 2, 0], X[pred == 2, 1], marker='+')
+ax.scatter(X[pred == 3, 0], X[pred == 3, 1], marker='.')
+ax.set_title("Decision Tree Predictions on Training Set")
+plt.show()

@@ -127,47 +127,50 @@ class LogisticRegression:
         return predictions
 
 
-# Example code:
+def main():
+    print('Single feature/binary classification logistic regression: ')
+    test = np.loadtxt('data/logistic.txt', delimiter=',')
+    X = test[:, 0]
+    y = test[:, 1]
 
-print("Single feature/binary classification logistic regression: ")
-test = np.loadtxt('data/logistic.txt', delimiter=',')
-X = test[:, 0]
-y = test[:, 1]
+    lr = LogisticRegression()
+    theta = lr.fit(X, y, visualize=True, learning_rate=0.003, no_of_iterations=6000)
+    print('Parameter values: \n' + str(theta[1]))
+    print('Predictions for 10, 50, and 100: ' + str(lr.predict(np.array([[10.], [50], [100]]))))
 
-lr = LogisticRegression()
-theta = lr.fit(X, y, visualize=True, learning_rate=0.003, no_of_iterations=6000)
-print("Parameter values: \n" + str(theta[1]))
-print("Predictions for 10, 50, and 100: " + str(lr.predict(np.array([[10.], [50], [100]]))))
+    plt.scatter(X, y, marker='.')
+    plt.plot(X, lr.sigmoid(np.append(np.ones((X.shape[0], 1)), X[np.newaxis].T, 1), theta[1]))
+    plt.title('Logistic Regression Prediction')
+    plt.show()
 
-plt.scatter(X, y, marker='.')
-plt.plot(X, lr.sigmoid(np.append(np.ones((X.shape[0], 1)), X[np.newaxis].T, 1), theta[1]))
-plt.title("Logistic Regression Prediction")
-plt.show()
+    print('\n\nMultivariate/multi classification logistic regression: ')
+    test = np.loadtxt('data/multi_classification.txt', delimiter=',')
+    X = test[:, 0:2]
+    y = test[:, 2]
 
-print("\n\nMultivariate/multi classification logistic regression: ")
-test = np.loadtxt('data/multi_classification.txt', delimiter=',')
-X = test[:, 0:2]
-y = test[:, 2]
+    print('Add x1^x2, x1^2, and x2^2 as features to help predict better')
+    X = np.append(X, (X[:, 0] * X[:, 1] / 100)[np.newaxis].T, axis=1)
+    X = np.append(X, (X[:, 0] ** 2 / 100)[np.newaxis].T, axis=1)
+    X = np.append(X, (X[:, 1] ** 2 / 100)[np.newaxis].T, axis=1)
 
-print("Add x1^x2, x1^2, and x2^2 as features to help predict better")
-X = np.append(X, (X[:, 0] * X[:, 1] / 100)[np.newaxis].T, axis=1)
-X = np.append(X, (X[:, 0] ** 2 / 100)[np.newaxis].T, axis=1)
-X = np.append(X, (X[:, 1] ** 2 / 100)[np.newaxis].T, axis=1)
+    lr = LogisticRegression()
+    theta = lr.fit(X, y, learning_rate=0.0001, no_of_iterations=1000)
+    print('Predictions for (50, 50), (40, 40), (40, 60), (60, 30), and (60, 60)')
+    print(lr.predict(np.array([[50., 50, 25, 25, 25],
+                               [40., 40, 16, 16, 16],
+                               [40., 60, 24, 16, 36],
+                               [60., 30, 18, 36, 9],
+                               [60., 60, 36, 36, 36]])))
 
-lr = LogisticRegression()
-theta = lr.fit(X, y, learning_rate=0.0001, no_of_iterations=1000)
-print("Predictions for (50, 50), (40, 40), (40, 60), (60, 30), and (60, 60)")
-print(lr.predict(np.array([[50., 50, 25, 25, 25],
-                           [40., 40, 16, 16, 16],
-                           [40., 60, 24, 16, 36],
-                           [60., 30, 18, 36, 9],
-                           [60., 60, 36, 36, 36]])))
+    pred = lr.predict(X)
+    fig, ax = plt.subplots()
+    ax.scatter(X[pred == 0, 0], X[pred == 0,1], marker='o')
+    ax.scatter(X[pred == 1, 0], X[pred == 1,1], marker='*')
+    ax.scatter(X[pred == 2, 0], X[pred == 2,1], marker='+')
+    ax.scatter(X[pred == 3, 0], X[pred == 3,1], marker='.')
+    ax.set_title('Logistic Regression Predictions on Multi Training Set')
+    plt.show()
 
-pred = lr.predict(X)
-fig, ax = plt.subplots()
-ax.scatter(X[pred == 0, 0], X[pred == 0,1], marker='o')
-ax.scatter(X[pred == 1, 0], X[pred == 1,1], marker='*')
-ax.scatter(X[pred == 2, 0], X[pred == 2,1], marker='+')
-ax.scatter(X[pred == 3, 0], X[pred == 3,1], marker='.')
-ax.set_title("Logistic Regression Predictions on Multi Training Set")
-plt.show()
+
+if __name__ == '__main__':
+    main()

@@ -102,24 +102,27 @@ class KMeans:
         return cost / data.shape[0]
 
 
-# Example code:
+def main():
+    print('K-means clustering: ')
+    data = np.loadtxt('data/kmeans.txt', delimiter=',')
 
-print("K-means clustering: ")
-data = np.loadtxt('data/kmeans.txt', delimiter=',')
+    plt.scatter(data[:, 0], data[:, 1])
+    plt.show()
 
-plt.scatter(data[:, 0], data[:, 1])
-plt.show()
+    kmeans = KMeans()
+    assignments, clusters = kmeans.cluster(data, 3, no_of_trials=10)
+    print('Clusters:')
+    print(clusters)
+    print('Assignments:')
+    print(assignments)
 
-kmeans = KMeans()
-assignments, clusters = kmeans.cluster(data, 3, no_of_trials=10)
-print("Clusters:")
-print(clusters)
-print("Assignments:")
-print(assignments)
+    plt.scatter(data[assignments == 0, 0], data[assignments == 0, 1], marker='o')
+    plt.scatter(data[assignments == 1, 0], data[assignments == 1, 1], marker='x')
+    plt.scatter(data[assignments == 2, 0], data[assignments == 2, 1], marker='1')
+    plt.title('Cluster Assignments')
 
-plt.scatter(data[assignments == 0, 0], data[assignments == 0, 1], marker='o')
-plt.scatter(data[assignments == 1, 0], data[assignments == 1, 1], marker='x')
-plt.scatter(data[assignments == 2, 0], data[assignments == 2, 1], marker='1')
-plt.title("Cluster Assignments")
+    plt.show()
 
-plt.show()
+
+if __name__ == '__main__':
+    main()

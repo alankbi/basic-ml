@@ -112,43 +112,45 @@ class LinearRegression:
         return np.squeeze(np.append(np.ones((X.shape[0], 1)), X, 1).dot(self.theta))
 
 
-# Example code:
+def main():
+    print('Single feature linear regression: ')
+    test = np.loadtxt('data/linear.txt', delimiter=',')
+    X = test[:, 0]
+    y = test[:, 1]
 
-print("Single feature linear regression: ")
-test = np.loadtxt('data/linear.txt', delimiter=',')
-X = test[:, 0]
-y = test[:, 1]
+    lr = LinearRegression()
+    theta = lr.fit(X, y, visualize=True, normalize=True)
+    print('Gradient descent: ')
+    print('Parameter values: \n' + str(theta))
+    print('Predictions for 10, 50, and 100: ' + str(lr.predict(np.array([[10.], [50], [100]]))))
 
-lr = LinearRegression()
-theta = lr.fit(X, y, visualize=True, normalize=True)
-print("Gradient descent: ")
-print("Parameter values: \n" + str(theta))
-print("Predictions for 10, 50, and 100: " + str(lr.predict(np.array([[10.], [50], [100]]))))
+    print('\nNormal equation: ')
+    theta = lr.fit(X, y, use_gradient_descent=False)
+    print('Predictions for 10, 50, and 100: ' + str(lr.predict(np.array([[10.], [50], [100]]))))
 
-print("\nNormal equation: ")
-theta = lr.fit(X, y, use_gradient_descent=False)
-print("Predictions for 10, 50, and 100: " + str(lr.predict(np.array([[10.], [50], [100]]))))
+    plt.plot(X, y, X, theta[0] + theta[1] * X)
+    plt.title('Linear Regression Prediction')
+    plt.show()
 
-plt.plot(X, y, X, theta[0] + theta[1] * X)
-plt.title("Linear Regression Prediction")
-plt.show()
+    print('\n\nMultiple feature linear regression: ')
+    test = np.loadtxt('data/linear_multi.txt', delimiter=',')
+    X = test[:, 0:2]
+    y = test[:, 2]
+
+    print('Gradient descent: ')
+    lr = LinearRegression()
+    theta = lr.fit(X, y, visualize=True, no_of_iterations=1000, normalize=True)
+    print('Parameter values: \n' + str(theta))
+    print('Predictions for (20, 30) and (50, 70): ' + str(lr.predict(np.array([[20., 30], [50., 70]]))))
+
+    print('\nNormal equation: ')
+    theta = lr.fit(X, y, use_gradient_descent=False, regularization=1)
+    print('Parameter values: \n' + str(theta))
+    print('Predictions for (20, 30) and (50, 70): ' + str(lr.predict(np.array([[20., 30], [50., 70]]))))
+
+    help(lr.fit)
+    help(lr.predict)
 
 
-print("\n\nMultiple feature linear regression: ")
-test = np.loadtxt('data/linear_multi.txt', delimiter=',')
-X = test[:, 0:2]
-y = test[:, 2]
-
-print("Gradient descent: ")
-lr = LinearRegression()
-theta = lr.fit(X, y, visualize=True, no_of_iterations=1000, normalize=True)
-print("Parameter values: \n" + str(theta))
-print("Predictions for (20, 30) and (50, 70): " + str(lr.predict(np.array([[20., 30], [50., 70]]))))
-
-print("\nNormal equation: ")
-theta = lr.fit(X, y, use_gradient_descent=False, regularization=1)
-print("Parameter values: \n" + str(theta))
-print("Predictions for (20, 30) and (50, 70): " + str(lr.predict(np.array([[20., 30], [50., 70]]))))
-
-help(lr.fit)
-help(lr.predict)
+if __name__ == '__main__':
+    main()
